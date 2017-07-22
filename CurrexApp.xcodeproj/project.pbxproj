@@ -25,6 +25,9 @@
 		C848C8D71F2321DA003AE54C /* ReactiveObjCBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85601F230306009C2361 /* ReactiveObjCBridge.framework */; };
 		C848C8D81F2321DA003AE54C /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85611F230306009C2361 /* ReactiveSwift.framework */; };
 		C848C8D91F2321DA003AE54C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85621F230306009C2361 /* Result.framework */; };
+		C848C8DC1F232A17003AE54C /* ViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C848C8DB1F232A17003AE54C /* ViewModel.m */; };
+		C848C8DE1F235CC6003AE54C /* ViewModel_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = C848C8DD1F235CC6003AE54C /* ViewModel_Tests.m */; };
+		C848C8E31F235DAD003AE54C /* CEATestHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C848C8E21F235DAD003AE54C /* CEATestHelper.m */; };
 		C84EAA541F21C14100C3315C /* exchange_rates_1.xml in Resources */ = {isa = PBXBuildFile; fileRef = C84EAA531F21C12A00C3315C /* exchange_rates_1.xml */; };
 		C862429B1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C862429A1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m */; };
 		C8D6C0DF1F21B0900023ADA0 /* CEANetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = C8D6C0DE1F21B0900023ADA0 /* CEANetwork.m */; };
@@ -77,6 +80,11 @@
 		C81E85601F230306009C2361 /* ReactiveObjCBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjCBridge.framework; path = Carthage/Build/iOS/ReactiveObjCBridge.framework; sourceTree = "<group>"; };
 		C81E85611F230306009C2361 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		C81E85621F230306009C2361 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
+		C848C8DA1F232A17003AE54C /* ViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewModel.h; sourceTree = "<group>"; };
+		C848C8DB1F232A17003AE54C /* ViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewModel.m; sourceTree = "<group>"; };
+		C848C8DD1F235CC6003AE54C /* ViewModel_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewModel_Tests.m; sourceTree = "<group>"; };
+		C848C8E11F235DAD003AE54C /* CEATestHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEATestHelper.h; sourceTree = "<group>"; };
+		C848C8E21F235DAD003AE54C /* CEATestHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CEATestHelper.m; sourceTree = "<group>"; };
 		C84EAA531F21C12A00C3315C /* exchange_rates_1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = exchange_rates_1.xml; sourceTree = "<group>"; };
 		C86242991F21F75200C8EE2C /* CEACurrexRatesParserDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CEACurrexRatesParserDelegate.h; sourceTree = "<group>"; };
 		C862429A1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CEACurrexRatesParserDelegate.m; sourceTree = "<group>"; };
@@ -161,6 +169,9 @@
 				C84EAA521F21C12A00C3315C /* Test Data */,
 				C81886A51F2111EE003FF786 /* Info.plist */,
 				C8D6C0E71F21B5C20023ADA0 /* CEACurrexAPI_Tests.m */,
+				C848C8DD1F235CC6003AE54C /* ViewModel_Tests.m */,
+				C848C8E11F235DAD003AE54C /* CEATestHelper.h */,
+				C848C8E21F235DAD003AE54C /* CEATestHelper.m */,
 			);
 			path = CurrexAppTests;
 			sourceTree = "<group>";
@@ -182,6 +193,8 @@
 			children = (
 				C81886B21F2113A6003FF786 /* ViewController.h */,
 				C81886B31F2113A6003FF786 /* ViewController.m */,
+				C848C8DA1F232A17003AE54C /* ViewModel.h */,
+				C848C8DB1F232A17003AE54C /* ViewModel.m */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -335,6 +348,7 @@
 			files = (
 				C81886B51F2113A6003FF786 /* ViewController.m in Sources */,
 				C81886B41F2113A6003FF786 /* AppDelegate.m in Sources */,
+				C848C8DC1F232A17003AE54C /* ViewModel.m in Sources */,
 				C8D6C0DF1F21B0900023ADA0 /* CEANetwork.m in Sources */,
 				C818868B1F2111EE003FF786 /* main.m in Sources */,
 				C862429B1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m in Sources */,
@@ -347,6 +361,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C848C8E31F235DAD003AE54C /* CEATestHelper.m in Sources */,
+				C848C8DE1F235CC6003AE54C /* ViewModel_Tests.m in Sources */,
 				C8D6C0E81F21B5C20023ADA0 /* CEACurrexAPI_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

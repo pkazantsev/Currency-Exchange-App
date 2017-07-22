@@ -13,13 +13,7 @@
 #import "CEACurrexAPI.h"
 #import "CEACurrexRates.h"
 
-@interface NetworkStub: NSObject <CEANetwork>
-
-@property (strong, nonatomic, nonnull) NSString *testFileName;
-
-- (instancetype)initWithTestFileName:(NSString *)testFileName;
-
-@end
+#import "CEATestHelper.h"
 
 @interface CEACurrexAPI_Tests : XCTestCase
 
@@ -73,20 +67,3 @@
 
 @end
 
-
-@implementation NetworkStub
-
-- (instancetype)initWithTestFileName:(NSString *)testFileName {
-    self = [super init];
-    self.testFileName = testFileName;
-    return self;
-}
-
-- (RACSignal *)fetchFileWithURL:(NSURL *)url {
-    NSURL *testDataFileUrl = [[NSBundle bundleForClass:[NetworkStub class]] URLForResource:self.testFileName withExtension:@"xml"];
-    NSData *data = [NSData dataWithContentsOfURL:testDataFileUrl];
-
-    return [RACSignal return:data];
-}
-
-@end
