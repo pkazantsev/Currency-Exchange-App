@@ -8,10 +8,12 @@
 
 @import Foundation;
 
+@class RACSignal;
+
 @protocol CEANetwork <NSObject>
 
 /// Fetches data from a given URL
-- (void)fetchFileWithURL:(NSURL *_Nonnull)url callback:(void(^_Nonnull)(NSData *_Nullable data, NSError *_Nullable error))callback;
+- (RACSignal *_Nonnull)fetchFileWithURL:(NSURL *_Nonnull)url;
 
 @end
 

@@ -13,6 +13,18 @@
 		C81886991F2111EE003FF786 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C81886971F2111EE003FF786 /* LaunchScreen.storyboard */; };
 		C81886B41F2113A6003FF786 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C81886B01F2113A6003FF786 /* AppDelegate.m */; };
 		C81886B51F2113A6003FF786 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C81886B31F2113A6003FF786 /* ViewController.m */; };
+		C81E85651F230306009C2361 /* ReactiveObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E855F1F230306009C2361 /* ReactiveObjC.framework */; };
+		C81E85661F230306009C2361 /* ReactiveObjC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C81E855F1F230306009C2361 /* ReactiveObjC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C81E85671F230306009C2361 /* ReactiveObjCBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85601F230306009C2361 /* ReactiveObjCBridge.framework */; };
+		C81E85681F230306009C2361 /* ReactiveObjCBridge.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85601F230306009C2361 /* ReactiveObjCBridge.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C81E85691F230306009C2361 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85611F230306009C2361 /* ReactiveSwift.framework */; };
+		C81E856A1F230306009C2361 /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85611F230306009C2361 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C81E856B1F230306009C2361 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85621F230306009C2361 /* Result.framework */; };
+		C81E856C1F230306009C2361 /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85621F230306009C2361 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C848C8D61F2321DA003AE54C /* ReactiveObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E855F1F230306009C2361 /* ReactiveObjC.framework */; };
+		C848C8D71F2321DA003AE54C /* ReactiveObjCBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85601F230306009C2361 /* ReactiveObjCBridge.framework */; };
+		C848C8D81F2321DA003AE54C /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85611F230306009C2361 /* ReactiveSwift.framework */; };
+		C848C8D91F2321DA003AE54C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C81E85621F230306009C2361 /* Result.framework */; };
 		C84EAA541F21C14100C3315C /* exchange_rates_1.xml in Resources */ = {isa = PBXBuildFile; fileRef = C84EAA531F21C12A00C3315C /* exchange_rates_1.xml */; };
 		C862429B1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C862429A1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m */; };
 		C8D6C0DF1F21B0900023ADA0 /* CEANetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = C8D6C0DE1F21B0900023ADA0 /* CEANetwork.m */; };
@@ -31,6 +43,23 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		C81E856D1F230306009C2361 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C81E85681F230306009C2361 /* ReactiveObjCBridge.framework in Embed Frameworks */,
+				C81E856C1F230306009C2361 /* Result.framework in Embed Frameworks */,
+				C81E85661F230306009C2361 /* ReactiveObjC.framework in Embed Frameworks */,
+				C81E856A1F230306009C2361 /* ReactiveSwift.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		C81886861F2111EE003FF786 /* CurrexApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CurrexApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C818868A1F2111EE003FF786 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -44,6 +73,10 @@
 		C81886B01F2113A6003FF786 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C81886B21F2113A6003FF786 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		C81886B31F2113A6003FF786 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		C81E855F1F230306009C2361 /* ReactiveObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjC.framework; path = Carthage/Build/iOS/ReactiveObjC.framework; sourceTree = "<group>"; };
+		C81E85601F230306009C2361 /* ReactiveObjCBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjCBridge.framework; path = Carthage/Build/iOS/ReactiveObjCBridge.framework; sourceTree = "<group>"; };
+		C81E85611F230306009C2361 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
+		C81E85621F230306009C2361 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		C84EAA531F21C12A00C3315C /* exchange_rates_1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = exchange_rates_1.xml; sourceTree = "<group>"; };
 		C86242991F21F75200C8EE2C /* CEACurrexRatesParserDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CEACurrexRatesParserDelegate.h; sourceTree = "<group>"; };
 		C862429A1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CEACurrexRatesParserDelegate.m; sourceTree = "<group>"; };
@@ -61,6 +94,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C81E85671F230306009C2361 /* ReactiveObjCBridge.framework in Frameworks */,
+				C81E856B1F230306009C2361 /* Result.framework in Frameworks */,
+				C81E85651F230306009C2361 /* ReactiveObjC.framework in Frameworks */,
+				C81E85691F230306009C2361 /* ReactiveSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +105,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C848C8D61F2321DA003AE54C /* ReactiveObjC.framework in Frameworks */,
+				C848C8D71F2321DA003AE54C /* ReactiveObjCBridge.framework in Frameworks */,
+				C848C8D81F2321DA003AE54C /* ReactiveSwift.framework in Frameworks */,
+				C848C8D91F2321DA003AE54C /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +141,7 @@
 				C81886951F2111EE003FF786 /* Assets.xcassets */,
 				C81886971F2111EE003FF786 /* LaunchScreen.storyboard */,
 				C818869A1F2111EE003FF786 /* Info.plist */,
+				C81E856E1F23030E009C2361 /* Frameworks */,
 				C81886891F2111EE003FF786 /* Supporting Files */,
 			);
 			path = CurrexApp;
@@ -144,6 +186,18 @@
 			path = "View Controllers";
 			sourceTree = "<group>";
 		};
+		C81E856E1F23030E009C2361 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C81E855F1F230306009C2361 /* ReactiveObjC.framework */,
+				C81E85601F230306009C2361 /* ReactiveObjCBridge.framework */,
+				C81E85611F230306009C2361 /* ReactiveSwift.framework */,
+				C81E85621F230306009C2361 /* Result.framework */,
+			);
+			name = Frameworks;
+			path = ..;
+			sourceTree = "<group>";
+		};
 		C84EAA521F21C12A00C3315C /* Test Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -184,6 +238,7 @@
 				C81886821F2111EE003FF786 /* Sources */,
 				C81886831F2111EE003FF786 /* Frameworks */,
 				C81886841F2111EE003FF786 /* Resources */,
+				C81E856D1F230306009C2361 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -329,6 +384,7 @@
 		C81886A61F2111EE003FF786 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -377,6 +433,7 @@
 		C81886A71F2111EE003FF786 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -420,6 +477,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = CurrexApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.pakaz.CurrexApp;
@@ -431,6 +492,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = CurrexApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.pakaz.CurrexApp;
@@ -442,8 +507,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = CurrexAppTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/Carthage/Build/iOS";
 				PRODUCT_BUNDLE_IDENTIFIER = net.pakaz.CurrexAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CurrexApp.app/CurrexApp";
@@ -454,8 +523,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = CurrexAppTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(PROJECT_DIR)/Carthage/Build/iOS";
 				PRODUCT_BUNDLE_IDENTIFIER = net.pakaz.CurrexAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CurrexApp.app/CurrexApp";

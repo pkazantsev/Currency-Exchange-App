@@ -6,15 +6,31 @@
 //  Copyright © 2017 PaKaz.net. All rights reserved.
 //
 
+@import ReactiveObjC;
+
 #import "CEANetwork.h"
 
 @implementation CEANetworkImpl
 
-- (void)fetchFileWithURL:(NSURL *_Nonnull)url callback:(void(^_Nonnull)(NSData *_Nullable data, NSError *_Nullable error))callback {
-    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
-        callback(data, error);
+- (RACSignal<NSData *> *)fetchFileWithURL:(NSURL *_Nonnull)url {
+    RACSignal *signal = [RACSignal createSignal:^RACDisposable *_Nullable(id<RACSubscriber> _Nonnull subscriber) {
+        NSURLSession *session = [NSURLSession sharedSession];
+        NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
+            if (error) {
+                [subscriber sendError:error];
+            } else if (!data) {
+                [subscriber sendError:nil];
+            } else {
+                [subscriber sendNext:data];
+            }
+        }];
+        [task resume];
+
+        return [RACDisposable disposableWithBlock:^{
+            [task cancel];
+        }];
     }];
-    [task resume];
+    return signal;
 }
 
 @end

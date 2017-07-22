@@ -9,12 +9,13 @@
 @import Foundation;
 
 @protocol CEANetwork;
+@class RACSignal;
 @class CEACurrexRates;
 
 @interface CEACurrexAPI : NSObject
 
 - (nonnull instancetype)initWithNetwork:(nonnull id <CEANetwork>)network;
 
-- (void)fetchExchangeRatesWithCallback:(void(^_Nonnull)(CEACurrexRates *_Nullable data, NSError *_Nullable error))callback;
+- (RACSignal<CEACurrexRates *> *_Nonnull)fetchExchangeRates;
 
 @end

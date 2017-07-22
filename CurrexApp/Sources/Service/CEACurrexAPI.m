@@ -6,6 +6,8 @@
 //  Copyright © 2017 PaKaz.net. All rights reserved.
 //
 
+@import ReactiveObjC;
+
 #import "CEANetwork.h"
 #import "CEACurrexAPI.h"
 #import "CEACurrexRates.h"
@@ -27,25 +29,23 @@
     return self;
 }
 
-- (void)fetchExchangeRatesWithCallback:(void (^)(CEACurrexRates * _Nullable, NSError * _Nullable))callback {
+- (RACSignal<CEACurrexRates *> *)fetchExchangeRates {
     NSURL *url = [NSURL URLWithString:@"http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"];
-    [self.network fetchFileWithURL:url callback:^(NSData * _Nullable data, NSError * _Nullable error) {
-        if (data) {
-            CEACurrexRatesParserDelegate *parserDelegate = [[CEACurrexRatesParserDelegate alloc] init];
+    RACSignal<NSData *> *dataSignal = [self.network fetchFileWithURL:url];
+    return [dataSignal tryMap:^CEACurrexRates *_Nullable(NSData *_Nullable data, NSError * _Nullable __autoreleasing * _Nullable errorPtr) {
+        CEACurrexRatesParserDelegate *parserDelegate = [[CEACurrexRatesParserDelegate alloc] init];
 
-            NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
-            parser.delegate = parserDelegate;
-            parser.shouldProcessNamespaces = NO;
-            parser.shouldReportNamespacePrefixes = NO;
-            parser.shouldResolveExternalEntities = NO;
+        NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+        parser.delegate = parserDelegate;
+        parser.shouldProcessNamespaces = NO;
+        parser.shouldReportNamespacePrefixes = NO;
+        parser.shouldResolveExternalEntities = NO;
 
-            if ([parser parse]) {
-                callback(parserDelegate.rates, nil);
-            } else {
-                callback(nil, parser.parserError);
-            }
+        if ([parser parse]) {
+            return parserDelegate.rates;
         } else {
-            callback(nil, error);
+            *errorPtr = parser.parserError;
+            return nil;
         }
     }];
 }

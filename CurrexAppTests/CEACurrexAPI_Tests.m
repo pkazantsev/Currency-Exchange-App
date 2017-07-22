@@ -7,6 +7,7 @@
 //
 
 @import XCTest;
+@import ReactiveObjC;
 
 #import "CEANetwork.h"
 #import "CEACurrexAPI.h"
@@ -48,7 +49,7 @@
 - (void)testFetchExchangeRates {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Fetch should call the callback"];
 
-    [self.api fetchExchangeRatesWithCallback:^(CEACurrexRates * _Nullable rates, NSError * _Nullable error) {
+    [[self.api fetchExchangeRates] subscribeNext:^(CEACurrexRates *_Nullable rates) {
         [expectation fulfill];
 
         XCTAssertNotNil(rates);
@@ -62,6 +63,9 @@
         NSDecimalNumber *gbpRate = rates.rates[@"GBP"];
         XCTAssertNotNil(gbpRate);
         XCTAssertEqualObjects(gbpRate, [NSDecimalNumber decimalNumberWithString:@"0.88718"]);
+    } error:^(NSError * _Nullable error) {
+        XCTFail(@"Rates fetching error: %@", error);
+        [expectation fulfill];
     }];
 
     [self waitForExpectationsWithTimeout:3.0 handler:nil];
@@ -78,10 +82,11 @@
     return self;
 }
 
-- (void)fetchFileWithURL:(NSURL *)url callback:(void (^)(NSData * _Nullable, NSError * _Nullable))callback {
+- (RACSignal *)fetchFileWithURL:(NSURL *)url {
     NSURL *testDataFileUrl = [[NSBundle bundleForClass:[NetworkStub class]] URLForResource:self.testFileName withExtension:@"xml"];
     NSData *data = [NSData dataWithContentsOfURL:testDataFileUrl];
-    callback(data, nil);
+
+    return [RACSignal return:data];
 }
 
 @end
