@@ -8,12 +8,12 @@
 
 @import Foundation;
 
-@class RACSignal;
+@class RACSignal<__covariant ValueType>;
 
 @protocol CEANetwork <NSObject>
 
 /// Fetches data from a given URL
-- (RACSignal *_Nonnull)fetchFileWithURL:(NSURL *_Nonnull)url;
+- (RACSignal<NSData *> *_Nonnull)fetchFileWithURL:(NSURL *_Nonnull)url;
 
 @end
 

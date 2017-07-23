@@ -49,7 +49,6 @@
     if (attributeDict.count == 0) {
         return;
     }
-    NSLog(@"Cube element with attributes: %@", attributeDict);
     NSString *time = attributeDict[@"time"];
     if (time) {
         self.ratesDate = [self.dateParser dateFromString:time];

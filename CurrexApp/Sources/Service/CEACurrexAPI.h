@@ -9,8 +9,8 @@
 @import Foundation;
 
 @protocol CEANetwork;
-@class RACSignal;
 @class CEACurrexRates;
+@class RACSignal<__covariant ValueType>;
 
 @interface CEACurrexAPI : NSObject
 

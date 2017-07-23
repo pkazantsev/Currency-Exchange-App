@@ -30,7 +30,7 @@
 }
 
 - (RACSignal<CEACurrexRates *> *)fetchExchangeRates {
-    NSURL *url = [NSURL URLWithString:@"http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"];
+    NSURL *url = [NSURL URLWithString:@"https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"];
     RACSignal<NSData *> *dataSignal = [self.network fetchFileWithURL:url];
     return [dataSignal tryMap:^CEACurrexRates *_Nullable(NSData *_Nullable data, NSError * _Nullable __autoreleasing * _Nullable errorPtr) {
         CEACurrexRatesParserDelegate *parserDelegate = [[CEACurrexRatesParserDelegate alloc] init];
@@ -42,8 +42,10 @@
         parser.shouldResolveExternalEntities = NO;
 
         if ([parser parse]) {
+            NSLog(@"Parsed exchange rates");
             return parserDelegate.rates;
         } else {
+            NSLog(@"Error parsing exchange rates: %@", parser.parserError);
             *errorPtr = parser.parserError;
             return nil;
         }
