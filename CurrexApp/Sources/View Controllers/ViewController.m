@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 
+#import "ViewModel.h"
+
 @interface ViewController ()
 
 @end
@@ -16,6 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self.viewModel startFetchingRates];
 }
 
 
