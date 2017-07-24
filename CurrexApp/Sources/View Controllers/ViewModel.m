@@ -129,12 +129,7 @@
 
     @weakify(self)
 
-    [[[RACObserve(self, currentRates) distinctUntilChanged] ignore:nil] subscribeNext:^(CEACurrexRates *_Nonnull rates) {
-        @strongify(self)
-        self.currentExchangeRate = [ViewModel mapBetweenCurrency:self.firstCurrency
-                                                     andCurrency:self.secondCurrency
-                                                       fromRates:rates];
-    }];
+    RACSignal *ratesUpdatedSignal = [[RACObserve(self, currentRates) distinctUntilChanged] ignore:nil];
 
     NSNumberFormatter *decimal = self.decimalFormatter;
     NSNumberFormatter *firstFormatter = self.firstCurrencyFormatter;
@@ -142,17 +137,38 @@
 
     RACSignal *directionChanged = RACObserve(self, forwardExchange);
 
-    RAC(self, prevExchangeButtonText) = [RACObserve(self, firstCurrency) map:^NSString *_Nullable(NSString *_Nullable firstCurrency) {
-        @strongify(self)
-        return [NSString stringWithFormat:@"%@ to %@", self.prevCurrencyCode, firstCurrency];
+    RACSignal<NSString *> *firstCurrencyChanged = [RACObserve(self, firstCurrency) doNext:^(NSString *_Nullable firstCurrency) {
+        self.firstCurrencyFormatter.currencyCode = firstCurrency;
     }];
-    RAC(self, nextExchangeButtonText) = [RACObserve(self, secondCurrency) map:^NSString *_Nullable(NSString *_Nullable secondCurrency) {
+    RACSignal<NSString *> *secondCurrencyChanged = [RACObserve(self, secondCurrency) doNext:^(NSString *_Nullable secondCurrency) {
+        self.secondCurrencyFormatter.currencyCode = secondCurrency;
+    }];
+    RAC(self, prevExchangeButtonText) = [firstCurrencyChanged map:^NSString *_Nullable(NSString *_Nullable firstCurrency) {
         @strongify(self)
-        return [NSString stringWithFormat:@"%@ to %@", secondCurrency, self.nextCurrencyCode];
+        return [NSString stringWithFormat:@"◀︎ %@ to %@", self.prevCurrencyCode, firstCurrency];
+    }];
+    RAC(self, nextExchangeButtonText) = [secondCurrencyChanged map:^NSString *_Nullable(NSString *_Nullable secondCurrency) {
+        @strongify(self)
+        return [NSString stringWithFormat:@"%@ to %@ ▶︎", secondCurrency, self.nextCurrencyCode];
+    }];
+    RAC(self, firstAmount) = [firstCurrencyChanged map:^NSDecimalNumber *_Nullable(NSString * _Nullable firstCurrency) {
+        @strongify(self)
+        return self.amounts[firstCurrency];
+    }];
+    RAC(self, secondAmount) = [secondCurrencyChanged map:^NSDecimalNumber *_Nullable(NSString * _Nullable secondCurrency) {
+        @strongify(self)
+        return self.amounts[secondCurrency];
     }];
 
     RAC(self, exchangeDirectionButtonText) = [directionChanged map:^NSString *_Nonnull(NSNumber *_Nullable isForward) {
         return isForward.boolValue ? @"→" : @"←";
+    }];
+
+    [[RACSignal combineLatest:@[ratesUpdatedSignal, firstCurrencyChanged, secondCurrencyChanged]] subscribeNext:^(RACTuple *_Nullable tuple) {
+        @strongify(self)
+        self.currentExchangeRate = [ViewModel mapBetweenCurrency:self.firstCurrency
+                                                     andCurrency:self.secondCurrency
+                                                       fromRates:tuple.first];
     }];
 
     RACSignal *exchangeRateUpdated = [RACObserve(self, currentExchangeRate) ignore:nil];
@@ -244,6 +260,27 @@
 }
 - (NSString *)nextCurrencyCode {
     return self.currencyCodes[self.nextCurrencyCodeIndex];
+}
+
+- (void)goToPrevCurrenciesPair {
+    self.secondCurrency = self.firstCurrency;
+    NSString *firstCurrency = [self prevCurrencyCode];
+    self.sourceCurrencyIndex = [self prevCurrencyCodeIndex];
+    self.targetCurrencyIndex = self.sourceCurrencyIndex + 1;
+    if (self.targetCurrencyIndex >= self.currencyCodes.count) {
+        self.sourceCurrencyIndex = 0;
+    }
+    self.firstCurrency = firstCurrency;
+}
+- (void)goToNextCurrenciesPair {
+    self.firstCurrency = self.secondCurrency;
+    NSString *secondCurrency = [self nextCurrencyCode];
+    self.targetCurrencyIndex = [self nextCurrencyCodeIndex];
+    self.sourceCurrencyIndex = self.targetCurrencyIndex - 1;
+    if (self.sourceCurrencyIndex < 0) {
+        self.sourceCurrencyIndex = self.currencyCodes.count - 1;
+    }
+    self.secondCurrency = secondCurrency;
 }
 
 - (void)switchDirection {

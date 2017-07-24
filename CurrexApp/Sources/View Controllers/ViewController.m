@@ -47,6 +47,14 @@
         return @(((NSNumber *)tuple.first).boolValue && ((NSNumber *)tuple.second).boolValue);
     }];
 
+    [[self.mainView.prevCurrencyPairButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
+        @strongify(self)
+        [self.viewModel goToPrevCurrenciesPair];
+    }];
+    [[self.mainView.nextCurrencyPairButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
+        @strongify(self)
+        [self.viewModel goToNextCurrenciesPair];
+    }];
     [[self.mainView.changeExchangeDirectionButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
         @strongify(self)
         [self.viewModel switchDirection];

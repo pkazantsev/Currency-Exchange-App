@@ -50,6 +50,9 @@
 
 - (void)exchange;
 
+- (void)goToPrevCurrenciesPair;
+- (void)goToNextCurrenciesPair;
+
 + (NSDecimalNumber *_Nullable)mapBetweenCurrency:(NSString *_Nonnull)src
                                      andCurrency:(NSString *_Nonnull)dst
                                        fromRates:(CEACurrexRates *_Nonnull)rates;
