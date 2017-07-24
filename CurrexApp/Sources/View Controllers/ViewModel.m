@@ -16,7 +16,7 @@
 ///
 @property (strong, nonatomic, nonnull) NSArray<NSString *> *currencyCodes;
 ///
-@property (strong, nonatomic, nonnull) NSDictionary<NSString *, NSDecimalNumber *> *amounts;
+@property (strong, nonatomic, nonnull) NSMutableDictionary<NSString *, NSDecimalNumber *> *amounts;
 ///
 @property (strong, nonatomic, nonnull) CEACurrexAPI *api;
 ///
@@ -75,9 +75,9 @@
 
     self.api = api;
     self.currencyCodes = @[@"EUR", @"USD", @"GBP"];
-    self.amounts = @{@"EUR": [NSDecimalNumber decimalNumberWithString:@"100"],
-                     @"USD": [NSDecimalNumber decimalNumberWithString:@"100"],
-                     @"GBP": [NSDecimalNumber decimalNumberWithString:@"100"]};
+    self.amounts = [@{@"EUR": [NSDecimalNumber decimalNumberWithString:@"100"],
+                      @"USD": [NSDecimalNumber decimalNumberWithString:@"100"],
+                      @"GBP": [NSDecimalNumber decimalNumberWithString:@"100"]} mutableCopy];
 
     [self configureNumberFormatters];
     [self registerObservers];
@@ -104,6 +104,25 @@
 
     self.firstUserSetAmount = self.amounts[self.firstCurrency];
 
+}
+
+- (void)exchange {
+    BOOL didExchange = NO;
+    if (self.forwardExchange) {
+        if (self.firstUserSetAmount && [self.firstAmount compare:self.firstUserSetAmount] != NSOrderedAscending) {
+            self.firstAmount = [self.firstAmount decimalNumberBySubtracting:self.firstUserSetAmount];
+            self.secondAmount = [self.secondAmount decimalNumberByAdding:self.secondUserSetAmount];
+            didExchange = YES;
+        }
+    } else if (self.secondUserSetAmount && [self.secondAmount compare:self.secondUserSetAmount] != NSOrderedAscending) {
+        self.firstAmount = [self.firstAmount decimalNumberByAdding:self.firstUserSetAmount];
+        self.secondAmount = [self.secondAmount decimalNumberBySubtracting:self.secondUserSetAmount];
+        didExchange = YES;
+    }
+    if (didExchange) {
+        self.amounts[self.firstCurrency] = self.firstAmount;
+        self.amounts[self.secondCurrency] = self.secondAmount;
+    }
 }
 
 - (void)registerObservers {
@@ -188,19 +207,19 @@
         return [secondFormatter stringFromNumber:second];
     }];
 
-    self.firstAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, firstUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
+    self.firstAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, firstAmount), RACObserve(self, firstUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (self.forwardExchange) {
             // Only if forward exchange
-            return @([self.firstAmount compare:(NSDecimalNumber *)tuple.first] != NSOrderedAscending);
+            return @([(NSDecimalNumber *)tuple.first compare:(NSDecimalNumber *)tuple.second] != NSOrderedAscending);
         }
         return @(YES);
     }];
-    self.secondAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, secondUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
+    self.secondAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, secondAmount), RACObserve(self, secondUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (!self.forwardExchange) {
             // Only if backward exchange
-            return @([self.secondAmount compare:(NSDecimalNumber *)tuple.first] != NSOrderedAscending);
+            return @([(NSDecimalNumber *)tuple.first compare:(NSDecimalNumber *)tuple.second] != NSOrderedAscending);
         }
         return @(YES);
     }];

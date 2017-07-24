@@ -51,6 +51,10 @@
         @strongify(self)
         [self.viewModel switchDirection];
     }];
+    [[self.mainView.exchangeCurrencyButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
+        @strongify(self)
+        [self.viewModel exchange];
+    }];
 
     RACSignal<NSNumber *> *directionChanged = RACObserve(self.viewModel, forwardExchange);
     RACSignal *directionChangedReversed = [directionChanged map:^id _Nullable(NSNumber *_Nullable isForward) {
