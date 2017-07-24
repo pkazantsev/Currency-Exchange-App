@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *firstCurrencyAmountTextField;
 @property (weak, nonatomic) IBOutlet UITextField *secondCurrencyAmountTextField;
 @property (weak, nonatomic) IBOutlet UIButton *changeExchangeDirectionButton;
+@property (weak, nonatomic) IBOutlet UIButton *exchangeCurrencyButton;
 
 @property (weak, nonatomic) IBOutlet UIButton *prevCurrencyPairButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextCurrencyPairButton;

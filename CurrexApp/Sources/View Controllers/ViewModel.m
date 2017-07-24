@@ -39,6 +39,10 @@
 /// Amount set by user in the right text field
 @property (strong, nonatomic, nonnull) NSDecimalNumber *secondUserSetAmount;
 
+/// Indicates if amount user entered is not enough for exchange
+@property (strong, nonatomic, nonnull, readwrite) RACSignal<NSNumber *> *firstAmountEnoughSignal;
+@property (strong, nonatomic, nonnull, readwrite) RACSignal<NSNumber *> *secondAmountEnoughSignal;
+
 @property (nonatomic) NSInteger sourceCurrencyIndex;
 @property (nonatomic) NSInteger targetCurrencyIndex;
 
@@ -183,6 +187,23 @@
     RAC(self, secondCurrencyAmount) = [secondAmountSignal map:^NSString *_Nullable(NSDecimalNumber *_Nullable second) {
         return [secondFormatter stringFromNumber:second];
     }];
+
+    self.firstAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, firstUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
+        @strongify(self)
+        if (self.forwardExchange) {
+            // Only if forward exchange
+            return @([self.firstAmount compare:(NSDecimalNumber *)tuple.first] != NSOrderedAscending);
+        }
+        return @(YES);
+    }];
+    self.secondAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, secondUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
+        @strongify(self)
+        if (!self.forwardExchange) {
+            // Only if backward exchange
+            return @([self.secondAmount compare:(NSDecimalNumber *)tuple.first] != NSOrderedAscending);
+        }
+        return @(YES);
+    }];
 }
 
 - (NSInteger)nextCurrencyCodeIndex {
@@ -217,11 +238,12 @@
     return [secondAmount decimalNumberByMultiplyingBy:exchangeRate];
 }
 
-- (void)updateSecondAmountWithFirstAmountString:(NSString *)firstAmountStr {
-    if (!firstAmountStr) {
-        return;
+- (void)updateSecondAmountWithFirstAmountString:(NSString *_Nonnull)firstAmountStr {
+    NSString *filteredStr = [self filterOnlyNumbers:firstAmountStr];
+    if (![filteredStr isEqualToString:firstAmountStr]) {
+        self.firstCurrencyUserSetAmount = filteredStr;
     }
-    NSDecimalNumber *firstAmount = (NSDecimalNumber *)[self.decimalFormatter numberFromString:firstAmountStr];
+    NSDecimalNumber *firstAmount = (NSDecimalNumber *)[self.decimalFormatter numberFromString:filteredStr];
     if (!firstAmount) {
         return;
     }
@@ -231,11 +253,12 @@
     }
     self.secondUserSetAmount = secondAmount;
 }
-- (void)updateFirstAmountWithSecondAmountString:(NSString *)secondAmountStr {
-    if (!secondAmountStr) {
-        return;
+- (void)updateFirstAmountWithSecondAmountString:(NSString *_Nonnull)secondAmountStr {
+    NSString *filteredStr = [self filterOnlyNumbers:secondAmountStr];
+    if (![filteredStr isEqualToString:secondAmountStr]) {
+        self.secondCurrencyUserSetAmount = filteredStr;
     }
-    NSDecimalNumber *secondAmount = (NSDecimalNumber *)[self.decimalFormatter numberFromString:secondAmountStr];
+    NSDecimalNumber *secondAmount = (NSDecimalNumber *)[self.decimalFormatter numberFromString:filteredStr];
     if (!secondAmount) {
         return;
     }
@@ -244,6 +267,16 @@
     if (![self.secondUserSetAmount isEqualToNumber:secondAmount]) {
         self.secondUserSetAmount = secondAmount;
     }
+}
+/// Modifies a string by removing all characters that are not meant to be in a number
+- (NSString *_Nonnull)filterOnlyNumbers:(NSString *_Nonnull)source {
+    NSMutableCharacterSet *set = [[NSCharacterSet decimalDigitCharacterSet] mutableCopy];
+    [set addCharactersInString:[self.decimalFormatter decimalSeparator]];
+    NSRange nonNumberRange = [source rangeOfCharacterFromSet:[set invertedSet]];
+    if (nonNumberRange.location == NSNotFound) {
+        return source;
+    }
+    return [source stringByReplacingOccurrencesOfString:[source substringWithRange:nonNumberRange] withString:@""];
 }
 
 + (NSDecimalNumber *_Nullable)mapBetweenCurrency:(NSString *_Nonnull)src

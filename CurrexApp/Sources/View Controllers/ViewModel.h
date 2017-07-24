@@ -29,6 +29,10 @@
 @property (strong, nonatomic, nonnull, readonly) NSString *secondCurrencyUserSetAmount;
 
 @property (strong, nonatomic, nonnull, readonly) NSString *exchangeDirectionButtonText;
+/// Indicates if amount user entered is enough for exchange
+@property (strong, nonatomic, nonnull, readonly) RACSignal<NSNumber *> *firstAmountEnoughSignal;
+@property (strong, nonatomic, nonnull, readonly) RACSignal<NSNumber *> *secondAmountEnoughSignal;
+
 /// If exchange is from the first currency to the second, or reverse if NO;
 @property (nonatomic, readonly) BOOL forwardExchange;
 
@@ -39,8 +43,8 @@
 
 - (void)populateWithData;
 
-- (void)updateSecondAmountWithFirstAmountString:(NSString *_Nullable)firstAmount;
-- (void)updateFirstAmountWithSecondAmountString:(NSString *_Nullable)secondAmount;
+- (void)updateSecondAmountWithFirstAmountString:(NSString *_Nonnull)firstAmount;
+- (void)updateFirstAmountWithSecondAmountString:(NSString *_Nonnull)secondAmount;
 
 - (void)switchDirection;
 

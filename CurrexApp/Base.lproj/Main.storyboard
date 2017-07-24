@@ -128,6 +128,7 @@
                         </constraints>
                         <connections>
                             <outlet property="changeExchangeDirectionButton" destination="xeg-ob-dMR" id="zul-ZU-2ia"/>
+                            <outlet property="exchangeCurrencyButton" destination="fqA-RD-EMe" id="Kyf-UD-hi9"/>
                             <outlet property="exchangeRateLabel" destination="pXg-U2-8Ov" id="iL4-uf-oKK"/>
                             <outlet property="firstCurrencyAmountLabel" destination="rty-hF-nPa" id="j0m-5M-R4p"/>
                             <outlet property="firstCurrencyAmountTextField" destination="gFT-Kq-J4q" id="Ltl-Cs-ohC"/>
