@@ -230,13 +230,6 @@
 - (void)switchDirection {
     self.forwardExchange = !self.forwardExchange;
 }
-- (NSDecimalNumber *)secondAmountForFirstAmount:(NSDecimalNumber *)firstAmount {
-    return [firstAmount decimalNumberByMultiplyingBy:self.currentExchangeRate];
-}
-- (NSDecimalNumber *)firstAmountForSecondAmount:(NSDecimalNumber *)secondAmount {
-    NSDecimalNumber *exchangeRate = [NSDecimalNumber.one decimalNumberByDividingBy:self.currentExchangeRate];
-    return [secondAmount decimalNumberByMultiplyingBy:exchangeRate];
-}
 
 - (void)updateSecondAmountWithFirstAmountString:(NSString *_Nonnull)firstAmountStr {
     NSString *filteredStr = [self filterOnlyNumbers:firstAmountStr];
@@ -244,14 +237,9 @@
         self.firstCurrencyUserSetAmount = filteredStr;
     }
     NSDecimalNumber *firstAmount = (NSDecimalNumber *)[self.decimalFormatter numberFromString:filteredStr];
-    if (!firstAmount) {
-        return;
-    }
-    NSDecimalNumber *secondAmount = [self secondAmountForFirstAmount:firstAmount];
     if (![self.firstUserSetAmount isEqualToNumber:firstAmount]) {
         self.firstUserSetAmount = firstAmount;
     }
-    self.secondUserSetAmount = secondAmount;
 }
 - (void)updateFirstAmountWithSecondAmountString:(NSString *_Nonnull)secondAmountStr {
     NSString *filteredStr = [self filterOnlyNumbers:secondAmountStr];
@@ -259,11 +247,6 @@
         self.secondCurrencyUserSetAmount = filteredStr;
     }
     NSDecimalNumber *secondAmount = (NSDecimalNumber *)[self.decimalFormatter numberFromString:filteredStr];
-    if (!secondAmount) {
-        return;
-    }
-    NSDecimalNumber *firstAmount = [self firstAmountForSecondAmount:secondAmount];
-    self.firstUserSetAmount = firstAmount;
     if (![self.secondUserSetAmount isEqualToNumber:secondAmount]) {
         self.secondUserSetAmount = secondAmount;
     }
@@ -306,7 +289,7 @@
     RACSignal<NSDate *> *signal = [RACSignal merge:
         @[[RACSignal return:[NSDate date]],
           [RACSignal interval:30.0 onScheduler:[RACScheduler mainThreadScheduler]]]];
-    self.disposable = [[[signal flattenMap:^RACSignal<CEACurrexRates *> *_Nullable(NSDate *_Nullable value) {
+    self.disposable = [[[signal flattenMap:^RACSignal<CEACurrexRates *> *_Nullable(NSDate *_Nullable dateValue) {
         @strongify(self)
         return [self.api fetchExchangeRates];
     }] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(CEACurrexRates *_Nullable rates) {

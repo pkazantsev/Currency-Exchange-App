@@ -37,11 +37,11 @@
     RAC(self.mainView.nextCurrencyPairButton, title) = RACObserve(self.viewModel, nextExchangeButtonText);
     RAC(self.mainView.changeExchangeDirectionButton, title) = RACObserve(self.viewModel, exchangeDirectionButtonText);
 
-    RAC(self.mainView.firstCurrencyAmountTextField, backgroundColor) = [self.viewModel.firstAmountEnoughSignal map:^UIColor *_Nullable(NSNumber * _Nullable value) {
-        return (value.boolValue ? nil : [[UIColor orangeColor] colorWithAlphaComponent:0.56]);
+    RAC(self.mainView.firstCurrencyAmountTextField, backgroundColor) = [self.viewModel.firstAmountEnoughSignal map:^UIColor *_Nullable(NSNumber * _Nullable isEnough) {
+        return (isEnough.boolValue ? nil : [[UIColor orangeColor] colorWithAlphaComponent:0.56]);
     }];
-    RAC(self.mainView.secondCurrencyAmountTextField, backgroundColor) = [self.viewModel.secondAmountEnoughSignal map:^UIColor *_Nullable(NSNumber * _Nullable value) {
-        return (value.boolValue ? nil : [[UIColor orangeColor] colorWithAlphaComponent:0.56]);
+    RAC(self.mainView.secondCurrencyAmountTextField, backgroundColor) = [self.viewModel.secondAmountEnoughSignal map:^UIColor *_Nullable(NSNumber * _Nullable isEnough) {
+        return (isEnough.boolValue ? nil : [[UIColor orangeColor] colorWithAlphaComponent:0.56]);
     }];
     RAC(self.mainView.exchangeCurrencyButton, enabled) = [[RACSignal combineLatest:@[self.viewModel.firstAmountEnoughSignal, self.viewModel.secondAmountEnoughSignal]] map:^NSNumber *_Nullable(RACTuple * _Nullable tuple) {
         return @(((NSNumber *)tuple.first).boolValue && ((NSNumber *)tuple.second).boolValue);
