@@ -40,17 +40,20 @@
 
 - (void)startFetchingRates;
 - (void)stopFetchingRates;
-
+/// Initially populate the public properties with default data
 - (void)populateWithData;
 
 - (void)updateSecondAmountWithFirstAmountString:(NSString *_Nonnull)firstAmount;
 - (void)updateFirstAmountWithSecondAmountString:(NSString *_Nonnull)secondAmount;
-
+/// Switch exchange direction (see `self.forwardExchange`)
 - (void)switchDirection;
 
 - (void)exchange;
-
+/// Update the first and second currency codes accordingly
+/// for the previous page
 - (void)goToPrevCurrenciesPair;
+/// Update the first and second currency codes accordingly
+/// for the next page
 - (void)goToNextCurrenciesPair;
 
 + (NSDecimalNumber *_Nullable)mapBetweenCurrency:(NSString *_Nonnull)src

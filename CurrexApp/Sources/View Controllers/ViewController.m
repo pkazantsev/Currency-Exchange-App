@@ -34,7 +34,6 @@
         [viewModel startFetchingRates];
     }];
 
-    @weakify(self)
     RAC(self.mainView.firstCurrencyLabel, text) = RACObserve(self.viewModel, firstCurrency);
     RAC(self.mainView.secondCurrencyLabel, text) = RACObserve(self.viewModel, secondCurrency);
     RAC(self.mainView.firstCurrencyAmountLabel, text) = RACObserve(self.viewModel, firstCurrencyAmount);
@@ -56,20 +55,16 @@
     }];
 
     [[self.mainView.prevCurrencyPairButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
-        @strongify(self)
-        [self.viewModel goToPrevCurrenciesPair];
+        [viewModel goToPrevCurrenciesPair];
     }];
     [[self.mainView.nextCurrencyPairButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
-        @strongify(self)
-        [self.viewModel goToNextCurrenciesPair];
+        [viewModel goToNextCurrenciesPair];
     }];
     [[self.mainView.changeExchangeDirectionButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
-        @strongify(self)
-        [self.viewModel switchDirection];
+        [viewModel switchDirection];
     }];
     [[self.mainView.exchangeCurrencyButton rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
-        @strongify(self)
-        [self.viewModel exchange];
+        [viewModel exchange];
     }];
 
     RACSignal<NSNumber *> *directionChanged = RACObserve(self.viewModel, forwardExchange);
@@ -83,12 +78,10 @@
     RAC(self.mainView.secondCurrencyAmountTextField, text) = RACObserve(self.viewModel, secondCurrencyUserSetAmount);
 
     [[[[self.mainView.firstCurrencyAmountTextField rac_textSignal] ignore:nil] ignore:@""] subscribeNext:^(NSString * _Nullable value) {
-        @strongify(self)
-        [self.viewModel updateSecondAmountWithFirstAmountString:value];
+        [viewModel updateSecondAmountWithFirstAmountString:value];
     }];
     [[[[self.mainView.secondCurrencyAmountTextField rac_textSignal] ignore:nil] ignore:@""] subscribeNext:^(NSString * _Nullable value) {
-        @strongify(self)
-        [self.viewModel updateFirstAmountWithSecondAmountString:value];
+        [viewModel updateFirstAmountWithSecondAmountString:value];
     }];
 }
 

@@ -138,10 +138,10 @@
     RACSignal *directionChanged = RACObserve(self, forwardExchange);
 
     RACSignal<NSString *> *firstCurrencyChanged = [RACObserve(self, firstCurrency) doNext:^(NSString *_Nullable firstCurrency) {
-        self.firstCurrencyFormatter.currencyCode = firstCurrency;
+        firstFormatter.currencyCode = firstCurrency;
     }];
     RACSignal<NSString *> *secondCurrencyChanged = [RACObserve(self, secondCurrency) doNext:^(NSString *_Nullable secondCurrency) {
-        self.secondCurrencyFormatter.currencyCode = secondCurrency;
+        secondFormatter.currencyCode = secondCurrency;
     }];
     RAC(self, prevExchangeButtonText) = [firstCurrencyChanged map:^NSString *_Nullable(NSString *_Nullable firstCurrency) {
         @strongify(self)
@@ -199,7 +199,7 @@
     [updateSecondUserSetAmountSignal subscribeNext:^(RACTwoTuple *_Nullable tuple) {
         @strongify(self)
         if (self.forwardExchange) {
-            // Only if forward exchange
+            // Update only when second text field is not the user-edited side
             self.secondUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:tuple.second];
         }
     }];
@@ -208,7 +208,7 @@
     [updateFirstUserSetAmountSignal subscribeNext:^(RACTwoTuple *_Nullable tuple) {
         @strongify(self)
         if (!self.forwardExchange) {
-            // Only if backward exchange
+            // Update amount only when first text field is not the user-edited side
             NSDecimalNumber *exchangeRate = [NSDecimalNumber.one decimalNumberByDividingBy:tuple.second];
             self.firstUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:exchangeRate];
         }
@@ -226,7 +226,7 @@
     self.firstAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, firstAmount), RACObserve(self, firstUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (self.forwardExchange) {
-            // Only if forward exchange
+            // Check only when first text field is the user-edited side
             return @([(NSDecimalNumber *)tuple.first compare:(NSDecimalNumber *)tuple.second] != NSOrderedAscending);
         }
         return @(YES);
@@ -234,13 +234,15 @@
     self.secondAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, secondAmount), RACObserve(self, secondUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (!self.forwardExchange) {
-            // Only if backward exchange
+            // Check only when second text field is the user-edited side
             return @([(NSDecimalNumber *)tuple.first compare:(NSDecimalNumber *)tuple.second] != NSOrderedAscending);
         }
         return @(YES);
     }];
 }
 
+/// Second currency code index (from `self.currencyCodes`) for next page.
+/// The first will be current page's second currency code.
 - (NSInteger)nextCurrencyCodeIndex {
     if (self.targetCurrencyIndex + 1 >= self.currencyCodes.count) {
         return 0;
@@ -248,6 +250,8 @@
         return self.targetCurrencyIndex + 1;
     }
 }
+/// First currency code index (from `self.currencyCodes`) for previous page.
+/// The second will be current page's first currency code.
 - (NSInteger)prevCurrencyCodeIndex {
     if (self.sourceCurrencyIndex - 1 >= 0) {
         return self.sourceCurrencyIndex - 1;
@@ -255,9 +259,11 @@
         return self.currencyCodes.count - 1;
     }
 }
+/// First currency code for previous page.
 - (NSString *)prevCurrencyCode {
     return self.currencyCodes[self.prevCurrencyCodeIndex];
 }
+/// Second currency code index for next page.
 - (NSString *)nextCurrencyCode {
     return self.currencyCodes[self.nextCurrencyCodeIndex];
 }
