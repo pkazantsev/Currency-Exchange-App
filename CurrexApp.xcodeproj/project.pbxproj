@@ -28,6 +28,8 @@
 		C848C8DC1F232A17003AE54C /* ViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C848C8DB1F232A17003AE54C /* ViewModel.m */; };
 		C848C8DE1F235CC6003AE54C /* ViewModel_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = C848C8DD1F235CC6003AE54C /* ViewModel_Tests.m */; };
 		C848C8E31F235DAD003AE54C /* CEATestHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C848C8E21F235DAD003AE54C /* CEATestHelper.m */; };
+		C848C8E61F245BE8003AE54C /* View.m in Sources */ = {isa = PBXBuildFile; fileRef = C848C8E51F245BE8003AE54C /* View.m */; };
+		C848C8EA1F25CC6E003AE54C /* UIButtton_CurrexApp.m in Sources */ = {isa = PBXBuildFile; fileRef = C848C8E91F25CC6E003AE54C /* UIButtton_CurrexApp.m */; };
 		C84EAA541F21C14100C3315C /* exchange_rates_1.xml in Resources */ = {isa = PBXBuildFile; fileRef = C84EAA531F21C12A00C3315C /* exchange_rates_1.xml */; };
 		C862429B1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C862429A1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m */; };
 		C8D6C0DF1F21B0900023ADA0 /* CEANetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = C8D6C0DE1F21B0900023ADA0 /* CEANetwork.m */; };
@@ -85,6 +87,10 @@
 		C848C8DD1F235CC6003AE54C /* ViewModel_Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewModel_Tests.m; sourceTree = "<group>"; };
 		C848C8E11F235DAD003AE54C /* CEATestHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEATestHelper.h; sourceTree = "<group>"; };
 		C848C8E21F235DAD003AE54C /* CEATestHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CEATestHelper.m; sourceTree = "<group>"; };
+		C848C8E41F245BE8003AE54C /* View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = View.h; sourceTree = "<group>"; };
+		C848C8E51F245BE8003AE54C /* View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = View.m; sourceTree = "<group>"; };
+		C848C8E81F25CC6E003AE54C /* UIButtton_CurrexApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtton_CurrexApp.h; sourceTree = "<group>"; };
+		C848C8E91F25CC6E003AE54C /* UIButtton_CurrexApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtton_CurrexApp.m; sourceTree = "<group>"; };
 		C84EAA531F21C12A00C3315C /* exchange_rates_1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = exchange_rates_1.xml; sourceTree = "<group>"; };
 		C86242991F21F75200C8EE2C /* CEACurrexRatesParserDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CEACurrexRatesParserDelegate.h; sourceTree = "<group>"; };
 		C862429A1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CEACurrexRatesParserDelegate.m; sourceTree = "<group>"; };
@@ -179,6 +185,7 @@
 		C81886AE1F211357003FF786 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				C848C8E71F25CC54003AE54C /* Categories */,
 				C8D6C0E31F21B46C0023ADA0 /* Model */,
 				C81886B11F2113A6003FF786 /* View Controllers */,
 				C8D6C0DC1F21B0530023ADA0 /* Service */,
@@ -191,6 +198,8 @@
 		C81886B11F2113A6003FF786 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C848C8E41F245BE8003AE54C /* View.h */,
+				C848C8E51F245BE8003AE54C /* View.m */,
 				C81886B21F2113A6003FF786 /* ViewController.h */,
 				C81886B31F2113A6003FF786 /* ViewController.m */,
 				C848C8DA1F232A17003AE54C /* ViewModel.h */,
@@ -209,6 +218,15 @@
 			);
 			name = Frameworks;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		C848C8E71F25CC54003AE54C /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				C848C8E81F25CC6E003AE54C /* UIButtton_CurrexApp.h */,
+				C848C8E91F25CC6E003AE54C /* UIButtton_CurrexApp.m */,
+			);
+			path = Categories;
 			sourceTree = "<group>";
 		};
 		C84EAA521F21C12A00C3315C /* Test Data */ = {
@@ -351,6 +369,8 @@
 				C848C8DC1F232A17003AE54C /* ViewModel.m in Sources */,
 				C8D6C0DF1F21B0900023ADA0 /* CEANetwork.m in Sources */,
 				C818868B1F2111EE003FF786 /* main.m in Sources */,
+				C848C8EA1F25CC6E003AE54C /* UIButtton_CurrexApp.m in Sources */,
+				C848C8E61F245BE8003AE54C /* View.m in Sources */,
 				C862429B1F21F75200C8EE2C /* CEACurrexRatesParserDelegate.m in Sources */,
 				C8D6C0E21F21B2B60023ADA0 /* CEACurrexAPI.m in Sources */,
 				C8D6C0E61F21B48D0023ADA0 /* CEACurrexRates.m in Sources */,
