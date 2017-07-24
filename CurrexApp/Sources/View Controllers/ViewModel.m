@@ -11,6 +11,11 @@
 #import "CEACurrexAPI.h"
 #import "CEACurrexRates.h"
 
+typedef NS_ENUM(int8_t, UserEditedTextField) {
+    UserEditedTextFieldFirst,
+    UserEditedTextFieldSecond
+};
+
 @interface ViewModel ()
 
 ///
@@ -65,6 +70,8 @@
 @property (strong, nonatomic, nonnull, readwrite) NSString *exchangeDirectionButtonText;
 ///
 @property (nonatomic, readwrite) BOOL forwardExchange;
+///
+@property (nonatomic) UserEditedTextField editedField;
 
 @end
 
@@ -102,6 +109,7 @@
     self.firstAmount = self.amounts[self.firstCurrency];
     self.secondAmount = self.amounts[self.secondCurrency];
 
+    self.editedField = UserEditedTextFieldFirst;
     self.firstUserSetAmount = self.amounts[self.firstCurrency];
 
 }
@@ -186,11 +194,11 @@
         return [NSString stringWithFormat:@"%@ = %@", oneStr, rateStr];
     }];
 
-    RACSignal *firstUserSetAmountSignal = RACObserve(self, firstUserSetAmount);
+    RACSignal *firstUserSetAmountSignal = [RACObserve(self, firstUserSetAmount) distinctUntilChanged];
     RAC(self, firstCurrencyUserSetAmount) = [firstUserSetAmountSignal map:^NSString *_Nullable(NSDecimalNumber *_Nullable first) {
         return [decimal stringFromNumber:first];
     }];
-    RACSignal *secondUserSetAmountSignal = RACObserve(self, secondUserSetAmount);
+    RACSignal *secondUserSetAmountSignal = [RACObserve(self, secondUserSetAmount) distinctUntilChanged];
     RAC(self, secondCurrencyUserSetAmount) = [secondUserSetAmountSignal map:^NSString *_Nullable(NSDecimalNumber *_Nullable second) {
         return [decimal stringFromNumber:second];
     }];
@@ -198,16 +206,27 @@
     RACSignal *updateSecondUserSetAmountSignal = [RACSignal combineLatest:@[firstUserSetAmountSignal, exchangeRateUpdated, directionChanged]];
     [updateSecondUserSetAmountSignal subscribeNext:^(RACTwoTuple *_Nullable tuple) {
         @strongify(self)
+        if (self.editedField == UserEditedTextFieldSecond) {
+            return;
+        }
         if (self.forwardExchange) {
             // Update only when second text field is not the user-edited side
             self.secondUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:tuple.second];
+        } else {
+            NSDecimalNumber *exchangeRate = [NSDecimalNumber.one decimalNumberByDividingBy:tuple.second];
+            self.secondUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:exchangeRate];
         }
     }];
 
     RACSignal *updateFirstUserSetAmountSignal = [RACSignal combineLatest:@[secondUserSetAmountSignal, exchangeRateUpdated, directionChanged]];
     [updateFirstUserSetAmountSignal subscribeNext:^(RACTwoTuple *_Nullable tuple) {
         @strongify(self)
-        if (!self.forwardExchange) {
+        if (self.editedField == UserEditedTextFieldFirst) {
+            return;
+        }
+        if (self.forwardExchange) {
+            self.firstUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:tuple.second];
+        } else {
             // Update amount only when first text field is not the user-edited side
             NSDecimalNumber *exchangeRate = [NSDecimalNumber.one decimalNumberByDividingBy:tuple.second];
             self.firstUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:exchangeRate];
@@ -299,6 +318,7 @@
         self.firstCurrencyUserSetAmount = filteredStr;
     }
     NSDecimalNumber *firstAmount = (NSDecimalNumber *)[self.decimalFormatter numberFromString:filteredStr];
+    self.editedField = UserEditedTextFieldFirst;
     if (![self.firstUserSetAmount isEqualToNumber:firstAmount]) {
         self.firstUserSetAmount = firstAmount;
     }
@@ -309,6 +329,7 @@
         self.secondCurrencyUserSetAmount = filteredStr;
     }
     NSDecimalNumber *secondAmount = (NSDecimalNumber *)[self.decimalFormatter numberFromString:filteredStr];
+    self.editedField = UserEditedTextFieldSecond;
     if (![self.secondUserSetAmount isEqualToNumber:secondAmount]) {
         self.secondUserSetAmount = secondAmount;
     }

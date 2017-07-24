@@ -67,13 +67,6 @@
         [viewModel exchange];
     }];
 
-    RACSignal<NSNumber *> *directionChanged = RACObserve(self.viewModel, forwardExchange);
-    RACSignal *directionChangedReversed = [directionChanged map:^id _Nullable(NSNumber *_Nullable isForward) {
-        return @(!isForward.boolValue);
-    }];
-
-    RAC(self.mainView.firstCurrencyAmountTextField, enabled) = directionChanged;
-    RAC(self.mainView.secondCurrencyAmountTextField, enabled) = directionChangedReversed;
     RAC(self.mainView.firstCurrencyAmountTextField, text) = RACObserve(self.viewModel, firstCurrencyUserSetAmount);
     RAC(self.mainView.secondCurrencyAmountTextField, text) = RACObserve(self.viewModel, secondCurrencyUserSetAmount);
 

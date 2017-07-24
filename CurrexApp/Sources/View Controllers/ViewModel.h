@@ -33,9 +33,6 @@
 @property (strong, nonatomic, nonnull, readonly) RACSignal<NSNumber *> *firstAmountEnoughSignal;
 @property (strong, nonatomic, nonnull, readonly) RACSignal<NSNumber *> *secondAmountEnoughSignal;
 
-/// If exchange is from the first currency to the second, or reverse if NO;
-@property (nonatomic, readonly) BOOL forwardExchange;
-
 - (nonnull instancetype)initWithApi:(CEACurrexAPI *_Nonnull)api;
 
 - (void)startFetchingRates;
@@ -45,7 +42,11 @@
 
 - (void)updateSecondAmountWithFirstAmountString:(NSString *_Nonnull)firstAmount;
 - (void)updateFirstAmountWithSecondAmountString:(NSString *_Nonnull)secondAmount;
-/// Switch exchange direction (see `self.forwardExchange`)
+/// Switch exchange direction.
+///
+/// Forwards – from the first currency to the second,
+///
+/// Backwards – from the second currency to the first.
 - (void)switchDirection;
 
 - (void)exchange;
