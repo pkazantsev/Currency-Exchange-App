@@ -24,7 +24,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    ViewModel *viewModel = self.viewModel;
+
     [self.viewModel startFetchingRates];
+    [[NSNotificationCenter.defaultCenter rac_addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil] subscribeNext:^(NSNotification * _Nullable x) {
+        [viewModel stopFetchingRates];
+    }];
+    [[NSNotificationCenter.defaultCenter rac_addObserverForName:UIApplicationWillEnterForegroundNotification object:nil] subscribeNext:^(NSNotification * _Nullable x) {
+        [viewModel startFetchingRates];
+    }];
 
     @weakify(self)
     RAC(self.mainView.firstCurrencyLabel, text) = RACObserve(self.viewModel, firstCurrency);
