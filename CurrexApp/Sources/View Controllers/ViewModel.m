@@ -274,7 +274,7 @@
     self.sourceCurrencyIndex = [self prevCurrencyCodeIndex];
     self.targetCurrencyIndex = self.sourceCurrencyIndex + 1;
     if (self.targetCurrencyIndex >= self.currencyCodes.count) {
-        self.sourceCurrencyIndex = 0;
+        self.targetCurrencyIndex = 0;
     }
     self.firstCurrency = firstCurrency;
 }
