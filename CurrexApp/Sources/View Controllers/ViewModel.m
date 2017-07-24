@@ -273,10 +273,10 @@
     RACSignal<NSDate *> *signal = [RACSignal merge:
         @[[RACSignal return:[NSDate date]],
           [RACSignal interval:30.0 onScheduler:[RACScheduler mainThreadScheduler]]]];
-    self.disposable = [[signal flattenMap:^RACSignal<CEACurrexRates *> *_Nullable(NSDate *_Nullable value) {
+    self.disposable = [[[signal flattenMap:^RACSignal<CEACurrexRates *> *_Nullable(NSDate *_Nullable value) {
         @strongify(self)
         return [self.api fetchExchangeRates];
-    }] subscribeNext:^(CEACurrexRates *_Nullable rates) {
+    }] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(CEACurrexRates *_Nullable rates) {
         @strongify(self)
         self.currentRates = rates;
     }];
