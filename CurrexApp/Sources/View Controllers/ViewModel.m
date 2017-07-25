@@ -204,29 +204,20 @@ typedef NS_ENUM(int8_t, UserEditedTextField) {
     [[RACSignal combineLatest:@[firstUserSetAmountSignal, exchangeRateUpdated, directionChanged]] subscribeNext:^(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (self.editedField == UserEditedTextFieldSecond) {
+            // Update only when second text field is not the user-edited side
             return;
         }
-        if (self.forwardExchange) {
-            // Update only when second text field is not the user-edited side
-            self.secondUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:tuple.second];
-        } else {
-            NSDecimalNumber *exchangeRate = [NSDecimalNumber.one decimalNumberByDividingBy:tuple.second];
-            self.secondUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:exchangeRate];
-        }
+        self.secondUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:tuple.second];
     }];
 
     [[RACSignal combineLatest:@[secondUserSetAmountSignal, exchangeRateUpdated, directionChanged]] subscribeNext:^(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (self.editedField == UserEditedTextFieldFirst) {
+            // Update amount only when first text field is not the user-edited side
             return;
         }
-        if (self.forwardExchange) {
-            self.firstUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:tuple.second];
-        } else {
-            // Update amount only when first text field is not the user-edited side
-            NSDecimalNumber *exchangeRate = [NSDecimalNumber.one decimalNumberByDividingBy:tuple.second];
-            self.firstUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:exchangeRate];
-        }
+        NSDecimalNumber *exchangeRate = [NSDecimalNumber.one decimalNumberByDividingBy:tuple.second];
+        self.firstUserSetAmount = [tuple.first decimalNumberByMultiplyingBy:exchangeRate];
     }];
 
     RACSignal<NSDecimalNumber *> *firstAmountSignal = RACObserve(self, firstAmount);
