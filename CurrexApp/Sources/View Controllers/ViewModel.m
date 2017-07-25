@@ -95,7 +95,6 @@ typedef NS_ENUM(int8_t, UserEditedTextField) {
 - (void)populateWithData {
 
     self.forwardExchange = YES;
-    self.currentExchangeRate = NSDecimalNumber.one;
 
     self.sourceCurrencyIndex = 0;
     self.targetCurrencyIndex = 1;
@@ -172,15 +171,14 @@ typedef NS_ENUM(int8_t, UserEditedTextField) {
         return isForward.boolValue ? @"→" : @"←";
     }];
 
-    [[RACSignal combineLatest:@[ratesUpdatedSignal, firstCurrencyChanged, secondCurrencyChanged]] subscribeNext:^(RACTuple *_Nullable tuple) {
-        @strongify(self)
-        self.currentExchangeRate = [ViewModel mapBetweenCurrency:self.firstCurrency
-                                                     andCurrency:self.secondCurrency
-                                                       fromRates:tuple.first];
-    }];
+    RACSignal<RACTuple *> *updateExchRate = [RACSignal combineLatest:@[ratesUpdatedSignal, firstCurrencyChanged, secondCurrencyChanged]];
+    RAC(self, currentExchangeRate) = [[updateExchRate map:^NSDecimalNumber *_Nullable(RACTuple *_Nullable tuple) {
+        return [ViewModel mapBetweenCurrency:tuple.second andCurrency:tuple.third fromRates:tuple.first];
+    }] ignore:nil];
 
-    RACSignal *exchangeRateUpdated = [RACObserve(self, currentExchangeRate) ignore:nil];
-    RAC(self, exchangeRate) = [[RACSignal combineLatest:@[directionChanged, exchangeRateUpdated]] map:^NSString *_Nullable(RACTuple *_Nullable tuple) {
+    RACSignal *exchangeRateUpdated = [[RACObserve(self, currentExchangeRate) ignore:nil] distinctUntilChanged];
+    RAC(self, exchangeRate) = [[RACSignal combineLatest:@[directionChanged, exchangeRateUpdated]
+                                ] map:^NSString *_Nullable(RACTuple *_Nullable tuple) {
         NSString *rateStr;
         NSString *oneStr;
         if (((NSNumber *)tuple.first).boolValue) {
@@ -203,8 +201,7 @@ typedef NS_ENUM(int8_t, UserEditedTextField) {
         return [decimal stringFromNumber:second];
     }];
 
-    RACSignal *updateSecondUserSetAmountSignal = [RACSignal combineLatest:@[firstUserSetAmountSignal, exchangeRateUpdated, directionChanged]];
-    [updateSecondUserSetAmountSignal subscribeNext:^(RACTwoTuple *_Nullable tuple) {
+    [[RACSignal combineLatest:@[firstUserSetAmountSignal, exchangeRateUpdated, directionChanged]] subscribeNext:^(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (self.editedField == UserEditedTextFieldSecond) {
             return;
@@ -218,8 +215,7 @@ typedef NS_ENUM(int8_t, UserEditedTextField) {
         }
     }];
 
-    RACSignal *updateFirstUserSetAmountSignal = [RACSignal combineLatest:@[secondUserSetAmountSignal, exchangeRateUpdated, directionChanged]];
-    [updateFirstUserSetAmountSignal subscribeNext:^(RACTwoTuple *_Nullable tuple) {
+    [[RACSignal combineLatest:@[secondUserSetAmountSignal, exchangeRateUpdated, directionChanged]] subscribeNext:^(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (self.editedField == UserEditedTextFieldFirst) {
             return;
@@ -242,7 +238,10 @@ typedef NS_ENUM(int8_t, UserEditedTextField) {
         return [secondFormatter stringFromNumber:second];
     }];
 
-    self.firstAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, firstAmount), RACObserve(self, firstUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
+    self.firstAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, firstAmount),
+                                                               RACObserve(self, firstUserSetAmount),
+                                                               directionChanged]
+                                     ] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (self.forwardExchange) {
             // Check only when first text field is the user-edited side
@@ -250,7 +249,10 @@ typedef NS_ENUM(int8_t, UserEditedTextField) {
         }
         return @(YES);
     }];
-    self.secondAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, secondAmount), RACObserve(self, secondUserSetAmount), directionChanged]] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
+    self.secondAmountEnoughSignal = [[RACSignal combineLatest:@[RACObserve(self, secondAmount),
+                                                                RACObserve(self, secondUserSetAmount),
+                                                                directionChanged]
+                                      ] map:^NSNumber *_Nullable(RACTuple *_Nullable tuple) {
         @strongify(self)
         if (!self.forwardExchange) {
             // Check only when second text field is the user-edited side

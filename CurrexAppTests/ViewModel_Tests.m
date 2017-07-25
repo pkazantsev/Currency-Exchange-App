@@ -39,9 +39,13 @@
     self.api = [[CEACurrexAPI alloc] initWithNetwork:self.network];
 
     self.viewModel = [[ViewModel alloc] initWithApi:self.api];
+
+    [self.viewModel populateWithData];
+    [self.viewModel startFetchingRates];
 }
 
 - (void)tearDown {
+    [self.viewModel stopFetchingRates];
     self.viewModel = nil;
     self.api = nil;
     self.network = nil;
@@ -51,11 +55,11 @@
 
 - (void)testStartFetchingRates {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Rates should update after 'startFetchingRates' method is called"];
-    [[self.viewModel conversionRateFrom:@"EUR" to:@"USD"] subscribeNext:^(NSDecimalNumber *_Nonnull rate) {
+    XCTAssertEqualObjects(self.viewModel.firstCurrency, @"EUR");
+    XCTAssertEqualObjects(self.viewModel.secondCurrency, @"USD");
+    [[RACObserve(self.viewModel, exchangeRate) ignore:nil] subscribeNext:^(NSString *_Nullable exchangeRate) {
         [expectation fulfill];
-
-        NSDecimalNumber *expected = [NSDecimalNumber decimalNumberWithString:@"1.1485"];
-        XCTAssertEqualObjects(expected, rate);
+        XCTAssertEqualObjects(exchangeRate, @"€1 = $1.1485");
     }];
     [self.viewModel startFetchingRates];
 
@@ -63,72 +67,38 @@
 }
 
 - (void)testConversionRateNoReturnValueNotSet {
-    [[self.viewModel conversionRateFrom:@"USD" to:@"EUR"] subscribeNext:^(NSDecimalNumber *_Nullable rate) {
+    [[RACObserve(self.viewModel, exchangeRate) ignore:nil] subscribeNext:^(NSString *_Nullable exchangeRate) {
         XCTFail(@"Should not return value before first value comes");
     }];
 }
-- (void)testConversionRateFromUsdToEurSubscribeBeforeValueSet {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Conversion is done on rates update"];
+- (void)testConversionRateFromUsdToEur {
+    CEACurrexRates *rates = [[CEACurrexRates alloc] initWithRates:@{@"USD": [NSDecimalNumber decimalNumberWithString:@"1.23"]} onDate:[NSDate date]];
+    NSDecimalNumber *rate = [ViewModel mapBetweenCurrency:@"USD" andCurrency:@"EUR" fromRates:rates];
 
-    [[self.viewModel conversionRateFrom:@"USD" to:@"EUR"] subscribeNext:^(NSDecimalNumber *_Nonnull rate) {
-        [expectation fulfill];
-
-        NSDecimalNumber *expected = [NSDecimalNumber decimalNumberWithString:@"0.813"];
-        XCTAssertEqualObjects(expected, [rate decimalNumberByRoundingAccordingToBehavior:[CEATestHelper decimalNumberBehaviors]]);
-    }];
-    self.viewModel.currentRates = [[CEACurrexRates alloc] initWithRates:@{@"USD": [NSDecimalNumber decimalNumberWithString:@"1.23"]} onDate:[NSDate date]];
-
-    [self waitForExpectationsWithTimeout:3.0 handler:nil];
-}
-- (void)testConversionRateFromUsdToEurSubscribeAfterValueSet {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Conversion is done on rates update"];
-
-    self.viewModel.currentRates = [[CEACurrexRates alloc] initWithRates:@{@"USD": [NSDecimalNumber decimalNumberWithString:@"1.23"]} onDate:[NSDate date]];
-
-    [[self.viewModel conversionRateFrom:@"USD" to:@"EUR"] subscribeNext:^(NSDecimalNumber *_Nonnull rate) {
-        [expectation fulfill];
-
-        NSDecimalNumber *expected = [NSDecimalNumber decimalNumberWithString:@"0.813"];
-        XCTAssertEqualObjects(expected, [rate decimalNumberByRoundingAccordingToBehavior:[CEATestHelper decimalNumberBehaviors]]);
-    }];
-
-    [self waitForExpectationsWithTimeout:3.0 handler:nil];
+    NSDecimalNumber *expected = [NSDecimalNumber decimalNumberWithString:@"0.813"];
+    XCTAssertEqualObjects(expected, [rate decimalNumberByRoundingAccordingToBehavior:[CEATestHelper decimalNumberBehaviors]]);
 }
 - (void)testConversionRateFromEurToUsd {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Conversion is done on rates update"];
+    CEACurrexRates *rates = [[CEACurrexRates alloc] initWithRates:@{@"USD": [NSDecimalNumber decimalNumberWithString:@"1.23"]} onDate:[NSDate date]];
+    NSDecimalNumber *rate = [ViewModel mapBetweenCurrency:@"EUR" andCurrency:@"USD" fromRates:rates];
 
-    self.viewModel.currentRates = [[CEACurrexRates alloc] initWithRates:@{@"USD": [NSDecimalNumber decimalNumberWithString:@"1.23"]} onDate:[NSDate date]];
-
-    [[self.viewModel conversionRateFrom:@"EUR" to:@"USD"] subscribeNext:^(NSDecimalNumber *_Nonnull rate) {
-        [expectation fulfill];
-
-        NSDecimalNumber *expected = [NSDecimalNumber decimalNumberWithString:@"1.23"];
-        XCTAssertEqualObjects(expected, rate);
-    }];
-
-    [self waitForExpectationsWithTimeout:3.0 handler:nil];
+    NSDecimalNumber *expected = [NSDecimalNumber decimalNumberWithString:@"1.23"];
+    XCTAssertEqualObjects(expected, [rate decimalNumberByRoundingAccordingToBehavior:[CEATestHelper decimalNumberBehaviors]]);
 }
 - (void)testConversionRateFromEurToEur {
-    self.viewModel.currentRates = [[CEACurrexRates alloc] initWithRates:@{} onDate:[NSDate date]];
+    CEACurrexRates *rates = [[CEACurrexRates alloc] initWithRates:@{} onDate:[NSDate date]];
+    NSDecimalNumber *rate = [ViewModel mapBetweenCurrency:@"EUR" andCurrency:@"EUR" fromRates:rates];
 
-    [[self.viewModel conversionRateFrom:@"EUR" to:@"EUR"] subscribeNext:^(NSDecimalNumber *_Nonnull rate) {
-        XCTFail(@"Should not return value for EUR-to-EUR conversion");
-    }];
+    XCTAssertEqualObjects(nil, rate);
 }
 - (void)testConversionRateFromUsdToGbp {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Conversion is done on rates update"];
+    CEACurrexRates *rates = [[CEACurrexRates alloc] initWithRates:@{@"USD": [NSDecimalNumber decimalNumberWithString:@"1.1642"],
+                                                                    @"GBP": [NSDecimalNumber decimalNumberWithString:@"0.8961"]}
+                                                           onDate:[NSDate date]];
+    NSDecimalNumber *rate = [ViewModel mapBetweenCurrency:@"USD" andCurrency:@"GBP" fromRates:rates];
 
-    [[self.viewModel conversionRateFrom:@"USD" to:@"GBP"] subscribeNext:^(NSDecimalNumber *_Nonnull rate) {
-        [expectation fulfill];
-
-        NSDecimalNumber *expected = [NSDecimalNumber decimalNumberWithString:@"0.77"];
-        XCTAssertEqualObjects(expected, [rate decimalNumberByRoundingAccordingToBehavior:[CEATestHelper decimalNumberBehaviors]]);
-    }];
-    self.viewModel.currentRates = [[CEACurrexRates alloc] initWithRates:@{@"USD": [NSDecimalNumber decimalNumberWithString:@"1.1642"],
-                                                                          @"GBP": [NSDecimalNumber decimalNumberWithString:@"0.8961"]}
-                                                                 onDate:[NSDate date]];
-
-    [self waitForExpectationsWithTimeout:3.0 handler:nil];
+    NSDecimalNumber *expected = [NSDecimalNumber decimalNumberWithString:@"0.77"];
+    XCTAssertEqualObjects(expected, [rate decimalNumberByRoundingAccordingToBehavior:[CEATestHelper decimalNumberBehaviors]]);
 }
 
 @end
